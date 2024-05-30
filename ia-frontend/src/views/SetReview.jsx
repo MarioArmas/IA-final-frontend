@@ -10,9 +10,28 @@ export const SetReview = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes realizar alguna acción con el texto de la reseña, como enviarlo a un servidor, etc.
-    console.log('Texto de la reseña:', reviewText);
-    // Limpia el texto después de enviarlo, si es necesario
+    const reviewData = {
+      review: reviewText,
+    };
+    // Convertir el objeto JSON a una cadena
+    const jsonString = JSON.stringify(reviewData, null, 2);
+
+    // Crear un blob con el contenido del JSON
+    const blob = new Blob([jsonString], { type: 'application/json' });
+
+    // Crear una URL para el blob
+    const url = URL.createObjectURL(blob);
+
+    // Crear un elemento de anclaje temporal
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'review.json'; // Nombre del archivo que se descargará
+    link.click(); // Simular un clic para iniciar la descarga
+
+    // Limpiar el blob después de descargar
+    URL.revokeObjectURL(url);
+
+    // Limpia el texto después de enviarlo
     setReviewText('');
   };
 
