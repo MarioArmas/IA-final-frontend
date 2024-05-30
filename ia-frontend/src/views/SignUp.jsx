@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { readCSV } from '../utils/csvReader';
+import csvFile from '../assets/rotten_tomatoes_critic_reviews.csv';
 
 export const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,21 @@ export const SignUp = () => {
     publisher: '',
     password: '',
   });
+  const [publishers, setPublishers] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const publisherData = await readCSV(csvFile, 'publisher_name');
+        setPublishers(publisherData);
+      } catch (error) {
+        console.error('Error reading CSV file:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,16 +32,24 @@ export const SignUp = () => {
       ...formData,
       [name]: value,
     });
+    setError('');
   };
 
-  const navigate = useNavigate(); //Función navigate de useNavigate
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //Guardamos en memoria para no tener que guardarlo en base de datos
+    console.log('Publishers:', publishers); // Debugging output
+    console.log('Form Data:', formData); // Debugging output
+    debugger; // Pause execution here
+
+    if (!publishers.includes(formData.publisher)) {
+      setError('Publisher no existe en los datos.');
+      return;
+    }
+    
     localStorage.setItem('userData', JSON.stringify(formData)); 
-    console.log(formData);
-    navigate('/load-data'); //Navegar a load data
+    navigate('/set-review');
   };
 
   return (
@@ -58,6 +83,8 @@ export const SignUp = () => {
             fullWidth
             margin="normal"
             required
+            error={Boolean(error)}
+            helperText={error}
           />
           <TextField
             label="Password"
@@ -84,3 +111,4 @@ export const SignUp = () => {
   );
 };
 
+export default SignUp;
