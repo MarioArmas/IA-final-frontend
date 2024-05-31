@@ -3,36 +3,46 @@ import './SetReview.css';
 
 export const SetReview = () => {
   const [reviewText, setReviewText] = useState('');
+  const [responseMessage, setResponseMessage] = useState(null);
 
   const handleInputChange = (e) => {
     setReviewText(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const reviewData = {
       review: reviewText,
     };
-    // Convertir el objeto JSON a una cadena
-    const jsonString = JSON.stringify(reviewData, null, 2);
 
-    // Crear un blob con el contenido del JSON
-    const blob = new Blob([jsonString], { type: 'application/json' });
+    try {
+      const response = await fetch('http://localhost:8000', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewData),
+      });
 
-    // Crear una URL para el blob
-    const url = URL.createObjectURL(blob);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-    // Crear un elemento de anclaje temporal
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'review.json'; // Nombre del archivo que se descargará
-    link.click(); // Simular un clic para iniciar la descarga
+      const result = await response.json();
+      setResponseMessage('Reseña enviada con éxito: ' + JSON.stringify(result));
 
-    // Limpiar el blob después de descargar
-    URL.revokeObjectURL(url);
+      // Mostrar la notificación con la información recibida
+      alert('Reseña enviada con éxito: ' + JSON.stringify(result));
 
-    // Limpia el texto después de enviarlo
-    setReviewText('');
+      // Limpia el texto después de enviarlo
+      setReviewText('');
+    } catch (error) {
+      console.error('Error al enviar la reseña:', error);
+      setResponseMessage('Error al enviar la reseña');
+
+      // Mostrar la notificación en caso de error
+      alert('Error al enviar la reseña');
+    }
   };
 
   return (
@@ -50,6 +60,8 @@ export const SetReview = () => {
           Ingresar
         </button>
       </form>
+      {responseMessage && <div className="response-message">{responseMessage}</div>}
     </div>
   );
 };
+
