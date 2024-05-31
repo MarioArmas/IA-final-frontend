@@ -41,7 +41,7 @@ export const SignUp = () => {
     e.preventDefault();
     console.log('Publishers:', publishers); // Debugging output
     console.log('Form Data:', formData); // Debugging output
-    debugger; // Pause execution here
+    //debugger; // Pause execution here
 
     if (!publishers.includes(formData.publisher)) {
       setError('Publisher no existe en los datos.');

@@ -12,10 +12,15 @@ export const ShowList = () => {
 
   useEffect(() => {
     //consumo de API para la lista de peliculas
+    const page = {
+      page: "1",
+    };
     fetch('http://localhost:8000/get-all-movies', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify(page),
     })
       .then(response => response.json())
       .then(data => {
@@ -43,8 +48,8 @@ export const ShowList = () => {
           <TableBody>
             {movies.map((movie, index) => (
               <TableRow key={index}>
-                <TableCell>{movie.movie_title}</TableCell>
-                <TableCell>{movie.movie_info}</TableCell>
+                <TableCell>{movie.title}</TableCell>
+                <TableCell>{movie.info}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleBtnClick()}>
                     Review
