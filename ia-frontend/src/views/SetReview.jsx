@@ -14,20 +14,19 @@ export const SetReview = () => {
     const reviewData = {
       review: reviewText,
     };
-    const queryString = new URLSearchParams(reviewData).toString();
     try {
-      const response = await fetch(`http://localhost:8000/get-review?${queryString}`, {
-        mode: 'cors',  
-        method: 'GET',
+      const response = await fetch('http://localhost:8000/get-review', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(reviewData),
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      //if (!response.ok) {
+      //  throw new Error('Network response was not ok');
+      //}
+      console.log({response})
 
       const result = await response.json();
       setResponseMessage('Reseña enviada con éxito: ' + JSON.stringify(result));
