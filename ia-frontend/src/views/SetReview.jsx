@@ -14,10 +14,11 @@ export const SetReview = () => {
     const reviewData = {
       review: reviewText,
     };
-
+    const queryString = new URLSearchParams(reviewData).toString();
     try {
-      const response = await fetch('http://localhost:8000', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:8000/get-review?${queryString}`, {
+        mode: 'cors',  
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },

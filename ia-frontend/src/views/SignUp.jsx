@@ -49,7 +49,7 @@ export const SignUp = () => {
     }
     
     localStorage.setItem('userData', JSON.stringify(formData)); 
-    navigate('/set-review');
+    navigate('/show-list');
   };
 
   return (
